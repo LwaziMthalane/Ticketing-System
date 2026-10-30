@@ -1,0 +1,9 @@
+# For running on a desktop: pip install -r requirements.txt  then  python main.py
+kivy>=2.3.0
+https://github.com/kivymd/KivyMD/archive/4a2617ea24e13ef2540c37edb95a54ef02e78707.zip
+materialyoucolor==3.0.3
+materialshapes
+asynckivy
+asyncgui
+exceptiongroup
+pillow
