@@ -1,0 +1,53 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          pip install kivy
+          pip install https://github.com/kivymd/KivyMD/archive/4a2617ea24e13ef2540c37edb95a54ef02e78707.zip
+          pip install materialyoucolor==3.0.3
+          pip install materialshapes
+          pip install asynckivy asyncgui exceptiongroup
+          pip install pillow
+
+      - name: Build EXE with PyInstaller
+        run: |
+          $env:KIVY_GL_BACKEND = "angle_sdl2"
+          $env:HEADLESS = "1"
+
+          # --console keeps a log window open so any start-up error is visible.
+          # Once it runs fine, change --console to --windowed for a clean app window.
+          pyinstaller --onefile --console --name "GYezaHelpdesk" `
+            --icon icon.ico `
+            --add-data "logo.png;." `
+            --add-data "icon.png;." `
+            --collect-all kivymd `
+            --collect-all materialyoucolor `
+            --collect-all materialshapes `
+            main.py
+
+      - name: Upload EXE artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GYezaHelpdesk-Windows-EXE
+          path: dist/GYezaHelpdesk.exe
+          retention-days: 14
